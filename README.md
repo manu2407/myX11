@@ -16,7 +16,7 @@
 https://github.com/user-attachments/assets/3eaae1e2-04dc-4a9b-8c91-139f85f5fb9e
 
 <br>
-
+ *read BOOTSTRAP.md to see wht i did*
 ## 👻 Welcome
 
 Welcome to my dotfiles. I’m gh0stzk from Mexico.
