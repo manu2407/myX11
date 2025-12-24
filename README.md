@@ -12,11 +12,11 @@
 &ensp;[<kbd> <br> Keybindings <br> </kbd>](#very-useful-keybindigs-to-know)&ensp;
 &ensp;[<kbd> <br> Wiki <br> </kbd>](https://github.com/gh0stzk/dotfiles/wiki)&ensp;
 <br><br><br></div>
-
+ read BOOTSTRAP.md to see wht i did
 https://github.com/user-attachments/assets/3eaae1e2-04dc-4a9b-8c91-139f85f5fb9e
 
 <br>
- *read BOOTSTRAP.md to see wht i did*
+
 ## 👻 Welcome
 
 Welcome to my dotfiles. I’m gh0stzk from Mexico.
