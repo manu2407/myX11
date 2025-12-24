@@ -1,0 +1,35 @@
+# Core utilities
+unzip
+blueman
+
+# Display manager (X11)
+lightdm
+lightdm-gtk-greeter
+
+# Shell & development tools
+fish
+neovim
+lazygit
+
+# Containers & isolation
+docker
+docker-compose
+distrobox
+lazydocker
+
+# Browsers
+firefox
+chromium
+zen-browser-bin
+
+# Office & knowledge
+libreoffice-fresh
+obsidian
+
+# Media & utilities
+obs
+qbittorrent
+stremio
+
+# AI coding software (AUR)
+google-antigravity-bin
