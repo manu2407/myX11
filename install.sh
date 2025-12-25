@@ -48,7 +48,8 @@ is_installed() {
 # Install packages from package.txt
 install_packages() {
     local installer="$1"
-    local package_file="package.txt"
+    local script_dir="$(dirname "$(realpath "$0")")"
+    local package_file="${script_dir}/package.txt"
     
     if [[ ! -f "$package_file" ]]; then
         log_error "package.txt not found!"
