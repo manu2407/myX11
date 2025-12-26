@@ -32,4 +32,8 @@ qbittorrent
 stremio
 
 # AI coding software (AUR)
-google-antigravity-bin
+antigravity
+
+# AI Local LLM
+ollama
+lmstudio

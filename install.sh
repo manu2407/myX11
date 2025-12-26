@@ -42,12 +42,13 @@ detect_installer() {
 
 # Check if package is installed
 is_installed() {
-    pacman -Qi "$1" &> /dev/null
+    pacman -Q "$1" &> /dev/null
 }
 
 # Install packages from package.txt
 install_packages() {
     local installer="$1"
+    local dry_run="$2"
     local script_dir="$(dirname "$(realpath "$0")")"
     local package_file="${script_dir}/package.txt"
     
@@ -77,27 +78,33 @@ install_packages() {
     for package in "${packages[@]}"; do
         if is_installed "$package"; then
             log_success "$package is already installed (skipping)"
-            ((skipped_count++))
+            ((skipped_count+=1))
         else
+            if [[ "$dry_run" == "true" ]]; then
+                log_info "[DRY-RUN] Would install $package"
+                ((installed_count+=1))
+                continue
+            fi
+
             log_info "Installing $package..."
             
             if [[ "$installer" == "pacman" ]]; then
                 # For pacman, we need sudo and can't install AUR packages
-                if sudo pacman -S --noconfirm --needed "$package" 2>/dev/null; then
+                if sudo pacman -S --noconfirm --needed "$package"; then
                     log_success "Installed $package"
-                    ((installed_count++))
+                    ((installed_count+=1))
                 else
                     log_warning "Failed to install $package (may be AUR-only)"
-                    ((failed_count++))
+                    ((failed_count+=1))
                 fi
             else
                 # AUR helpers (paru/yay) don't need sudo for AUR packages
-                if $installer -S --noconfirm --needed "$package" 2>/dev/null; then
+                if $installer -S --noconfirm --needed "$package"; then
                     log_success "Installed $package"
-                    ((installed_count++))
+                    ((installed_count+=1))
                 else
                     log_warning "Failed to install $package"
-                    ((failed_count++))
+                    ((failed_count+=1))
                 fi
             fi
         fi
@@ -114,6 +121,11 @@ install_packages() {
 # Enable LightDM
 enable_lightdm() {
     log_info "Enabling LightDM display manager..."
+    
+    if ! is_installed "lightdm"; then
+        log_error "LightDM package not found. Skipping enabling service."
+        return 1
+    fi
     
     if sudo systemctl enable lightdm; then
         log_success "LightDM enabled successfully"
@@ -143,8 +155,16 @@ launch_riceinstaller() {
 
 # Main execution
 main() {
+    local dry_run="false"
+    if [[ "$1" == "--dry-run" ]]; then
+        dry_run="true"
+    fi
+
     echo ""
     log_info "=== X11 Bootstrap Installer ==="
+    if [[ "$dry_run" == "true" ]]; then
+        log_info "Running in DRY-RUN mode"
+    fi
     echo ""
     
     # Detect installer
@@ -153,14 +173,25 @@ main() {
     echo ""
     
     # Install packages
-    install_packages "$INSTALLER"
+    install_packages "$INSTALLER" "$dry_run"
     
     # Enable LightDM
-    enable_lightdm
+    if [[ "$dry_run" == "true" ]]; then
+        log_info "[DRY-RUN] Would enable LightDM service"
+    else
+        if ! enable_lightdm; then
+            log_error "Halting installation due to LightDM setup failure."
+            exit 1
+        fi
+    fi
     echo ""
     
     # Launch RiceInstaller
-    launch_riceinstaller
+    if [[ "$dry_run" == "true" ]]; then
+        log_info "[DRY-RUN] Would launch RiceInstaller"
+    else
+        launch_riceinstaller
+    fi
     
     echo ""
     log_success "Bootstrap installation complete!"
